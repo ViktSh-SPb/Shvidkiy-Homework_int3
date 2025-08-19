@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="WARN">
+    <Appenders>
+        <File name="SqlLogger" fileName="logs/sql.log" append="true">
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss} %-5level %logger - %msg%n</Pattern>
+            </PatternLayout>
+        </File>
+        <File name="AppLogger" fileName="logs/app.log" append="true">
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss} %-5level %logger - %msg%n</Pattern>
+            </PatternLayout>
+        </File>
+        <File name="ServiceLogger" fileName="logs/service.log" append="true">
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss} %-5level %logger - %msg%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org.hibernate.SQL" level="debug" additivity="false">
+            <AppenderRef ref="SqlLogger"/>
+        </Logger>
+
+        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
+            <AppenderRef ref="SqlLogger"/>
+        </Logger>
+
+        <Logger name="org.example" level="trace" additivity="false">
+            <AppenderRef ref="AppLogger"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="ServiceLogger"/>
+        </Root>
+    </Loggers>
+</Configuration>
