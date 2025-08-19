@@ -23,7 +23,7 @@ public class User {
     @Column
     private Integer age;
 
-    @Column
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     public User(){}
