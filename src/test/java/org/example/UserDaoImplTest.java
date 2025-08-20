@@ -6,6 +6,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,17 +49,25 @@ public class UserDaoImplTest {
         User user = new User("John", "john@gmail.com", 25, time);
         User savedUser = userDao.save(user);
         assertNotNull(savedUser.getId());
-        assertEquals("John", savedUser.getName());
+        assertAll("Проверка всех полей User",
+                ()->assertEquals("John", savedUser.getName(), "Имя должно быть Bill"),
+                ()->assertEquals("john@gmail.com", savedUser.getEmail(), "email должен быть bill@gmail.com"),
+                ()->assertEquals(25, savedUser.getAge(), "Возраст должен быть 30"),
+                ()->assertEquals(time, savedUser.getCreatedAt(), "Дата создания должна быть "+time));
     }
 
     @Test
     void testGetById() {
-        LocalDateTime time = LocalDateTime.now();
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         User user = new User("Bill", "bill@gmail.com", 30, time);
         userDao.save(user);
         Optional<User> found = userDao.getById(user.getId());
         assertTrue(found.isPresent());
-        assertEquals("Bill", found.get().getName());
+        assertAll("Проверка всех полей User",
+                ()->assertEquals("Bill", found.get().getName(), "Имя должно быть Bill"),
+                ()->assertEquals("bill@gmail.com", found.get().getEmail(), "email должен быть bill@gmail.com"),
+                ()->assertEquals(30, found.get().getAge(), "Возраст должен быть 30"),
+                ()->assertEquals(time, found.get().getCreatedAt(), "Дата создания должна быть "+time));
     }
 
     @Test
@@ -78,7 +87,7 @@ public class UserDaoImplTest {
         userDao.update(user);
         Optional<User> updated = userDao.getById(user.getId());
         assertTrue(updated.isPresent());
-        assertEquals("BobUpdated", updated.get().getName());
+        assertEquals("BobUpdated", updated.get().getName(), "Имя должно обновиться на BobUpdated");
     }
 
     @Test
