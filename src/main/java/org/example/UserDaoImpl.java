@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Viktor Shvidkiy
@@ -14,7 +15,7 @@ public class UserDaoImpl implements UserDao {
     private static final Logger logger = LogManager.getLogger(UserDao.class);
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         Transaction tx = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -32,10 +33,11 @@ public class UserDaoImpl implements UserDao {
         } finally {
             session.close();
         }
+        return user;
     }
 
     @Override
-    public User getById(Long id) {
+    public Optional<User> getById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             User user = session.get(User.class, id);
             if (user == null) {
@@ -43,7 +45,7 @@ public class UserDaoImpl implements UserDao {
             } else {
                 logger.info("Запись получена: {}", user);
             }
-            return user;
+            return Optional.ofNullable(user);
         } catch (Exception e) {
             logger.error("Ошибка при поиске записи: {}", e.getMessage());
             throw new RuntimeException("Ошибка при поиске записи.", e);

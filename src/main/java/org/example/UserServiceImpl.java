@@ -10,13 +10,15 @@ public class UserServiceImpl implements UserService{
     private final UserDao userDao = new UserDaoImpl();
 
     @Override
-    public void save(UserDto user) {
-        userDao.save(userDtoToUser(user));
+    public UserDto save(UserDto userDto) {
+        return userToUserDto(userDao.save(userDtoToUser(userDto)));
     }
 
     @Override
     public UserDto getById(Long id) {
-        return userToUserDto(userDao.getById(id));
+        return userDao.getById(id)
+                .map(UserServiceImpl::userToUserDto)
+                .orElse(null);
     }
 
     @Override
@@ -51,9 +53,9 @@ public class UserServiceImpl implements UserService{
         User user = new User();
         user.setId(userDto.getId());
         user.setName(userDto.getName());
-        user.setAge(user.getAge());
-        user.setEmail(user.getEmail());
-        user.setCreatedAt(user.getCreatedAt());
+        user.setAge(userDto.getAge());
+        user.setEmail(userDto.getEmail());
+        user.setCreatedAt(userDto.getCreatedAt());
         return user;
     }
 }
