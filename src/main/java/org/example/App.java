@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  */
 public class App {
     public static void main(String[] args) {
-        UserService userService = new UserServiceImpl();
+        UserService userService = new UserServiceImpl(new UserDaoImpl());
 
         System.out.println("----------Создаем 2-х пользователей----------");
         UserDto user1 = UserDto
