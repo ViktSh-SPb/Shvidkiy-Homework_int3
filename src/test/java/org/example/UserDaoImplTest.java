@@ -1,5 +1,6 @@
 package org.example;
 
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -24,19 +25,20 @@ public class UserDaoImplTest {
             .withPassword("test");
 
     private static UserDaoImpl userDao;
+    private static SessionFactory sessionFactory;
 
     @BeforeAll
     static void setup() {
-        System.setProperty("hibernate.connection.url", postgreSQLContainer.getJdbcUrl());
-        System.setProperty("Hibernate.connection.username", postgreSQLContainer.getUsername());
-        System.setProperty("Hibernate.connection.password", postgreSQLContainer.getPassword());
-
-        userDao = new UserDaoImpl();
+        sessionFactory = HibernateUtil.createSessionFactory(
+                postgreSQLContainer.getJdbcUrl(),
+                postgreSQLContainer.getUsername(),
+                postgreSQLContainer.getPassword());
+        userDao = new UserDaoImpl(sessionFactory);
     }
 
     @AfterEach
     void cleanUp() {
-        try (var session = HibernateUtil.getSessionFactory().openSession()) {
+        try (var session = sessionFactory.openSession()) {
             var tx = session.beginTransaction();
             session.createMutationQuery("delete from User").executeUpdate();
             tx.commit();
