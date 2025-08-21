@@ -3,6 +3,7 @@ package org.example;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.List;
@@ -13,11 +14,20 @@ import java.util.Optional;
  */
 public class UserDaoImpl implements UserDao {
     private static final Logger logger = LogManager.getLogger(UserDao.class);
+    private final SessionFactory sessionFactory;
+
+    public UserDaoImpl() {
+        this.sessionFactory = HibernateUtil.getSessionFactory();
+    }
+
+    public UserDaoImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public User save(User user) {
         Transaction tx = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         try {
             tx = session.beginTransaction();
             session.persist(user);
@@ -38,7 +48,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> getById(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             User user = session.get(User.class, id);
             if (user == null) {
                 logger.warn("Запись с id: {} не найдена.", id);
@@ -54,7 +64,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> getAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             List<User> users = session.createQuery("from User", User.class).list();
             logger.info("Получено {} записей.", users.size());
             return users;
@@ -67,7 +77,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(User user) {
         Transaction tx = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         try {
             tx = session.beginTransaction();
             session.merge(user);
@@ -85,7 +95,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete(User user) {
         Transaction tx = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         try {
             tx = session.beginTransaction();
             session.remove(user);
