@@ -29,7 +29,7 @@ public class UserDaoImplTest {
     static void setup() {
         System.setProperty("hibernate.connection.url", postgreSQLContainer.getJdbcUrl());
         System.setProperty("Hibernate.connection.username", postgreSQLContainer.getUsername());
-        System.setProperty("Hibername.connection.password", postgreSQLContainer.getPassword());
+        System.setProperty("Hibernate.connection.password", postgreSQLContainer.getPassword());
 
         userDao = new UserDaoImpl();
     }

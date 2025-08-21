@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:17
+    container_name: my_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: learn_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+    ports:
+      - "10000:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my_app
+    depends_on:
+      - db
+    environment:
+      DB_URL: jdbc:postgresql://db:10000/learn_db
+      DB_USER: user
+      DB_PASSWORD: user
+    command: ["java", "-jar", "app.jar"]
+
+volumes:
+  db_data:
