@@ -38,7 +38,7 @@ public class UserDaoImplTest {
 
     @AfterEach
     void cleanUp() {
-        try (var session = HibernateUtil.getSessionFactory().openSession()) {
+        try (var session = sessionFactory.openSession()) {
             var tx = session.beginTransaction();
             session.createMutationQuery("delete from User").executeUpdate();
             tx.commit();

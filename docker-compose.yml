@@ -18,13 +18,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     container_name: my_app
     depends_on:
       - db
     environment:
-      DB_URL: jdbc:postgresql://db:10000/learn_db
-      DB_USER: user
-      DB_PASSWORD: user
+      DB_URL: jdbc:postgresql://db:5432/learn_db
     command: ["java", "-jar", "app.jar"]
 
 volumes:

@@ -56,6 +56,5 @@ public class App {
         for (UserDto user : userService.getAll()) {
             System.out.println(user);
         }
-
     }
 }

@@ -22,7 +22,16 @@ public class HibernateUtil {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            SessionFactory sf = new Configuration().configure().buildSessionFactory();
+            /*
+            В этом методе переменной url присваиваю значение из переменной окружения. Если программа запущена в Docker,
+            то она есть. Если запущена в Intellij Idea, то переменной нет, условие не выполнится и url подтянется из
+            hibernate.cfg. Сделал это для того, чтобы приложение можно было запустить и через Докер и через Идею для
+            тестирования. Не знаю, насколько это корректно. Другого способа разбить запуск на 2 сценария не нашел.
+             */
+            Configuration cfg = new Configuration().configure();
+            String url = System.getenv("DB_URL");
+            if(url!=null) cfg.setProperty("hibernate.connection.url", url);
+            SessionFactory sf = cfg.buildSessionFactory();
             logger.info("Hibernate SessionFactory инициализирована.");
             return sf;
         } catch (Exception e) {
